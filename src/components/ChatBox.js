@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatBox.css';
 import { sendMessage } from '../services/api';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 function ChatBox() {
   const [messages, setMessages] = useState([
@@ -112,7 +114,13 @@ function ChatBox() {
         <div className="messages-container">
           {messages.map((message, index) => (
             <div key={index} className={`message ${message.sender}`}>
-              <div className="message-content">{message.text}</div>
+              <div className="message-content">
+                {message.sender === 'ai' ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.text}</ReactMarkdown>
+                ) : (
+                  message.text
+                )}
+              </div>
             </div>
           ))}
           <div ref={messagesEndRef} />
