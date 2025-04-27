@@ -3,6 +3,7 @@ import { Form, Input, Button, Tabs, Card, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import '../styles/global.css';
+import { login, register } from '../services/loginAPI';
 
 const { TabPane } = Tabs;
 
@@ -10,16 +11,35 @@ const Login: React.FC = () => {
   const [activeTab, setActiveTab] = useState('login');
   const navigate = useNavigate();
   
-  const onFinishLogin = (values: any) => {
-    console.log('Login values:', values);
-    message.success('Login successful!');
-    navigate('/dashboard/home');
+  const onFinishLogin = async (values: any) => {
+    try {
+      const response = await login(values);
+
+      if (response.code === 200) {
+        message.success('Login successful!');
+        console.log('Login response:', response);
+
+        localStorage.setItem('token', response.data.token);
+
+        navigate('/dashboard/home');
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
+    } catch (error: any) {
+      message.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
+    }
   };
   
-  const onFinishRegister = (values: any) => {
-    console.log('Register values:', values);
-    message.success('Registration successful! Please login.');
-    setActiveTab('login');
+  const onFinishRegister = async (values: any) => {
+    try {
+      const response = await register(values);
+      message.success('Registration successful! Please login.');
+      console.log('Register response:', response);
+
+      setActiveTab('login');
+    } catch (error) {
+      message.error('Registration failed. Please try again.');
+    }
   };
   
   return (
@@ -119,4 +139,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;
