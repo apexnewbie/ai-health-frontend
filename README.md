@@ -8,6 +8,7 @@
 3. Exercise Guidance功能的添加
 4. 个人信息界面的添加
 5. 提示优化
+6. token修改
 
 ## 主要功能
 
